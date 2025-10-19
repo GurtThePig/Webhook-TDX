@@ -1,5 +1,5 @@
 local function debugPrint(message)
-    if _G.Debug then
+    if getgenv().Debug then
         print("[Webhook Debug] " .. message)
     end
 end
@@ -17,15 +17,17 @@ local mapImages = {
     ["Borderlands"] = "https://static.wikia.nocookie.net/tdx/images/0/09/Borderlands.png",
     ["Calamity"] = "https://static.wikia.nocookie.net/tdx/images/9/99/CalamityMap.png",
     ["Carrier"] = "https://static.wikia.nocookie.net/tdx/images/0/0c/CarrierBig.png",
+    ["Cathedral"] = "https://static.wikia.nocookie.net/tdx/images/a/aa/CathedralIcon.png",
     ["Chalet"] = "https://static.wikia.nocookie.net/tdx/images/f/f7/Chalet.png",
     ["Cow Annoyance"] = "https://static.wikia.nocookie.net/tdx/images/0/03/CowAnnoyanceIcon.png",
+    ["Coastal Defense"] = "https://static.wikia.nocookie.net/tdx/images/7/72/CoastalDefenseIcon.png",
     ["Dead End Valley"] = "https://static.wikia.nocookie.net/tdx/images/b/ba/DeadEndValley.png",
     ["Deserted Island"] = "https://static.wikia.nocookie.net/tdx/images/9/98/Deserted_Island_Preview.png",
     ["Factorium"] = "https://static.wikia.nocookie.net/tdx/images/3/39/Factorium.png/",
     ["Fort Summit"] = "https://static.wikia.nocookie.net/tdx/images/9/96/FortSummit.png",
     ["Fortress Snowlyn"] = "https://static.wikia.nocookie.net/tdx/images/3/3d/FortressSnowlynMap.png",
     ["Gas Station"] = "https://static.wikia.nocookie.net/tdx/images/b/b9/GasStation.png",
-    ["GDIPortCity"] = "https://static.wikia.nocookie.net/tdx/images/3/35/GDIPortCity.png",
+    ["GDI Port City"] = "https://static.wikia.nocookie.net/tdx/images/3/35/GDIPortCity.png",
     ["Grasslands"] = "https://static.wikia.nocookie.net/tdx/images/6/6c/Grasslands.png",
     ["Hakurei Shrine"] = "https://static.wikia.nocookie.net/tdx/images/b/b0/HakureiShrine.png",
     ["Hellspire"] = "https://static.wikia.nocookie.net/tdx/images/6/66/HellspireThumb.png",
@@ -35,14 +37,17 @@ local mapImages = {
     ["Military Harbor"] = "https://static.wikia.nocookie.net/tdx/images/2/21/Military_harbour.png",
     ["Military HQ"] = "https://static.wikia.nocookie.net/tdx/images/f/fb/MilitaryHQ.png",
     ["Misleading Pond"] = "https://static.wikia.nocookie.net/tdx/images/b/bc/Misleading_Pond_Map.png",
+    ["Military Base"] = "https://static.wikia.nocookie.net/tdx/images/0/03/MilitaryBaseIcon.png",
     ["Moon Outpost"] = "https://static.wikia.nocookie.net/tdx/images/9/95/Moon_Outpost_img.png",
     ["Obscure Island"] = "https://static.wikia.nocookie.net/tdx/images/1/1f/Obscure_island_map.png",
     ["Oil Rig"] = "https://static.wikia.nocookie.net/tdx/images/b/bd/OilRigIcon.png",
+    ["Oil Field"] = "https://static.wikia.nocookie.net/tdx/images/d/d9/OilFieldIcon.png",
     ["Outpost Forge"] = "https://static.wikia.nocookie.net/tdx/images/7/7d/OutpostForge.png",
     ["Pond"] = "https://static.wikia.nocookie.net/tdx/images/1/10/Pond.png",
     ["Purgatory"] = "https://static.wikia.nocookie.net/tdx/images/d/d3/Purgatory.png",
     ["Ragnarok"] = "https://static.wikia.nocookie.net/tdx/images/6/68/Ragnarok.png",
     ["Research Base"] = "https://static.wikia.nocookie.net/tdx/images/1/18/Research_Base.png",
+    ["R&D"] = "https://static.wikia.nocookie.net/tdx/images/1/16/R%26DMapIcon.png",
     ["Route"] = "https://static.wikia.nocookie.net/tdx/images/c/c1/Route.png",
     ["Santa's Stronghold"] = "https://static.wikia.nocookie.net/tdx/images/4/44/SantasStrongholdIcon.png",
     ["Santa's Stronghold (Alt)"] = "https://static.wikia.nocookie.net/tdx/images/f/fb/Santa%27s_stronghold.png",
@@ -50,17 +55,19 @@ local mapImages = {
     ["Secret Forest"] = "https://static.wikia.nocookie.net/tdx/images/a/a2/Secretforest.png",
     ["SFOTH"] = "https://static.wikia.nocookie.net/tdx/images/d/dd/Sfoth.png",
     ["Singularity"] = "https://static.wikia.nocookie.net/tdx/images/d/d0/Singularity.png",
+    ["Simulation"] = "https://static.wikia.nocookie.net/tdx/images/d/d0/SimulationIcon.png",
     ["Sorrows Harbor"] = "https://static.wikia.nocookie.net/tdx/images/5/58/SorrowsHarborIcon.png",
     ["Survival 202"] = "https://static.wikia.nocookie.net/tdx/images/c/c1/Survival202.png",
     ["Treasure Cove"] = "https://static.wikia.nocookie.net/tdx/images/8/8a/TreasureCoveBig.png",
+    ["Tutorial"] = "https://static.wikia.nocookie.net/tdx/images/d/d0/SimulationIcon.png",
     ["Unforgiving Winter"] = "https://static.wikia.nocookie.net/tdx/images/4/43/Unforgiving_Winter_map.png",
     ["Vapor City"] = "https://static.wikia.nocookie.net/tdx/images/8/87/Vapor_Downtown.png",
     ["Vinland"] = "https://static.wikia.nocookie.net/tdx/images/c/cd/Vinland.png",
     ["Volcanic Mishap"] = "https://static.wikia.nocookie.net/tdx/images/d/d8/Volcanomishap.png",
     ["Western"] = "https://static.wikia.nocookie.net/tdx/images/9/95/Western.png",
-    ["Winter Fort"] = "https://static.wikia.nocookie.net/tdx/images/a/a6/Winter_Fort.png"
+    ["Winter Fort"] = "https://static.wikia.nocookie.net/tdx/images/a/a6/Winter_Fort.png",
 }
-local defaultImageUrl = "https://i.imgur.com/f8haOK9.png"
+local defaultImageUrl = "https://t6.rbxcdn.com/180DAY-7e74c34a381f4e8dc9bbe672f41d6b56"
 
 repeat
     task.wait()
@@ -128,12 +135,12 @@ local function sendWebhook()
     local embedColor, TitleMsg = getEmbedColorAndTitle()
     local fields = {
         {name = "**EXP:**", value = GameOverScreen.Main.RewardsFrame.InnerFrame.XP.TextLabel.Text, inline = true},
-        {name = "**Gold:**", value = GameOverScreen.Main.RewardsFrame.InnerFrame.Gold.TextLabel.Text, inline = true}
+        {name = "**Gold:**", value = GameOverScreen.Main.RewardsFrame.InnerFrame.Gold.TextLabel.Text, inline = true},
     }
 
     local tokensLabel = GameOverScreen.Main.RewardsFrame.InnerFrame:FindFirstChild("Tokens") and 
                         GameOverScreen.Main.RewardsFrame.InnerFrame.Tokens:FindFirstChild("TextLabel")
-    
+
     if tokensLabel and tokensLabel.Visible then
         table.insert(fields, {name = "**Tokens:**", value = tokensLabel.Text, inline = true})
         debugPrint("Tokens detected: " .. tokensLabel.Text)
@@ -175,16 +182,16 @@ local function sendWebhook()
             url = "https://i.imgur.com/MWxktrO.png"
         },
         footer = {
-            text = "By SploeCyber - TDX IS GOAT!",
+            text = "Modified by Gurty",
             icon_url = "https://i.imgur.com/prXYlyH.png"
         },
         timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time())
-    }    
-    
-    debugPrint("Sending webhook")
-    SendMessageEMBED(_G.Webhook, embed)
+    }
 
-    if _G.returnLobby then
+    debugPrint("Sending webhook")
+    SendMessageEMBED(getgenv().Webhook, embed)
+
+    if getgenv().returnLobby then
         game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestTeleportToLobby"):FireServer()
         debugPrint("Taking you back to the lobby.")
     end
