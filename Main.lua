@@ -250,23 +250,25 @@ if currentPlace == "Game" then
     end)
 
 elseif currentPlace == "Lobby" then
-    repeat
-        task.wait()
-    until LocalPlayer:FindFirstChild("PlayerGui") and LocalPlayer.PlayerGui:FindFirstChild("GUI")
-    debugPrint("GUI Found")
-
     local GUI
 
     if getgenv().Multiplayer and getgenv().MembersTracking then
 
         for i, MembersName in ipairs(PartyMembers) do
-            local CurrentInstance = game:GetService("Players"):FindFirstChild(MembersName)
+            local CurrentInstance
+            repeat task.wait() until game:GetService("Players"):FindFirstChild(MembersName)
+
+            CurrentInstance = game:GetService("Players").MembersName
+
+            repeat task.wait() until CurrentInstance:FindFirstChild("PlayerGui") and CurrentInstance.PlayerGui:FindFirstChild("GUI")
+            debugPrint("Members GUI Found.")
+
             if CurrentInstance then
                 GUI = CurrentInstance.PlayerGui.GUI
 
-                function trackMembersGrind()
+                function sendMembersStats()
                     function getEmbedColorAndTitle()
-                        return 0xffd700, "**Stats Tracking**"
+                        return 0xffd700, "**Members Stats Tracking**"
                     end
 
                     local fields = {
@@ -299,23 +301,26 @@ elseif currentPlace == "Lobby" then
                     }
 
                     if getgenv().MembersTracking then
-                        debugPrint("Sending Members Stats")
+                        debugPrint("Sending Members Stats.")
                         SendMessageEMBED(getgenv().Webhook, embed)
                     end
                 end
 
                 repeat task.wait() until game:IsLoaded()
-                task.spawn(trackMembersGrind)
+                task.spawn(sendMembersStats)
             end
         end
     elseif (getgenv().Multiplayer and not getgenv().MembersTracking) or
            (not getgenv().Multiplayer and not getgenv().MembersTracking) then
 
+        repeat task.wait() until LocalPlayer:FindFirstChild("PlayerGui") and LocalPlayer.PlayerGui:FindFirstChild("GUI")
+        debugPrint("Local GUI Found.")
+
         GUI = LocalPlayer.PlayerGui.GUI
 
-        function sendWebhook()
+        function sendLocalStats()
             function getEmbedColorAndTitle()
-                return 0xffd700, "**Stats Tracking**"
+                return 0xffd700, "**Local Stats Tracking**"
             end
 
             local fields = {
@@ -346,13 +351,13 @@ elseif currentPlace == "Lobby" then
                 },
                 timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time())
             }
-            debugPrint("Sending webhook")
+            debugPrint("Sending Local Stats.")
             SendMessageEMBED(getgenv().Webhook, embed)
         end
 
         repeat task.wait() until game:IsLoaded()
         if getgenv().StatsTracking then
-            task.spawn(sendWebhook)
+            task.spawn(sendLocalStats)
         end
     end
 end
