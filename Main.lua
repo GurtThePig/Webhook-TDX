@@ -151,7 +151,7 @@ if currentPlace == "Game" then
                             GameOverScreen.Main.RewardsFrame.InnerFrame.Tokens:FindFirstChild("TextLabel")
 
         local crystalsLabel = GameOverScreen.Main.RewardsFrame.InnerFrame:FindFirstChild("Crystals") and
-                            GameOverScreen.Main.RewardsFrame.InnerFrame.Tokens:FindFirstChild("TextLabel")
+                            GameOverScreen.Main.RewardsFrame.InnerFrame.Crystals:FindFirstChild("TextLabel")
 
         if tokensLabel and tokensLabel.Visible then
             table.insert(fields, {name = "**:comet: Tokens:**", value = tokensLabel.Text, inline = true})
