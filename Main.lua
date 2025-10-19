@@ -272,5 +272,5 @@ elseif currentPlace == "Lobby" then
     end
 
     repeat task.wait() until game:IsLoaded()
-    sendWebhook()
+    task.spawn(sendWebhook)
 end
