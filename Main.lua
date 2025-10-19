@@ -310,8 +310,8 @@ elseif currentPlace == "Lobby" then
                 task.spawn(sendMembersStats)
             end
         end
-    elseif (getgenv().Multiplayer and not getgenv().MembersTracking) or
-           (not getgenv().Multiplayer and not getgenv().MembersTracking) then
+
+    elseif not getgenv().Multiplayer or not getgenv().MembersTracking then
 
         repeat task.wait() until LocalPlayer:FindFirstChild("PlayerGui") and LocalPlayer.PlayerGui:FindFirstChild("GUI")
         debugPrint("Local GUI Found.")
