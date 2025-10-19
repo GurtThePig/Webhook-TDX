@@ -227,7 +227,7 @@ if currentPlace == "Game" then
                 end
 
                 local infoTable = {
-                    placeId = game.PlaceId,
+                    placeId = 9503261072,
                     linkCode = `"{MainPrivateCode}"`
                 }
                 game:GetService("ExperienceService"):LaunchExperience(infoTable)
