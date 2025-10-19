@@ -211,6 +211,8 @@ if currentPlace == "Game" then
 
         if getgenv().ReturnLobby then
             if getgenv().UsePrivateServer and (getgenv().PrivateLink and getgenv().PrivateLink ~= "") then
+                game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestUpdateSetting"):FireServer("AutoSkip", false)
+                task.wait()
                 local URL = getgenv().PrivateLink
                 local PrivateCode = string.match(URL, "privateServerLinkCode=([^&]+)")
                 local infoTable = {
@@ -221,6 +223,7 @@ if currentPlace == "Game" then
                 game:Shutdown()
             else
                 game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestUpdateSetting"):FireServer("AutoSkip", false)
+                task.wait()
                 game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestTeleportToLobby"):FireServer()
                 debugPrint("Taking you back to the lobby.")
             end
