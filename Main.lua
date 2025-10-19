@@ -219,9 +219,9 @@ if currentPlace == "Game" then
                 task.wait()
 
                 local MainPrivateCode
-                if getgenv().PrivateCode and not getgenv().PrivateLink then
+                if getgenv().PrivateCode ~= "" and getgenv().PrivateLink == "" then
                     MainPrivateCode = getgenv().PrivateCode
-                elseif getgenv().PrivateLink and not getgenv().PrivateCode then
+                elseif getgenv().PrivateLink ~= "" and getgenv().PrivateCode == "" then
                     local URL = getgenv().PrivateLink
                     MainPrivateCode = string.match(URL, "privateServerLinkCode=([^&]+)")
                 end
