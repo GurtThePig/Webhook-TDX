@@ -210,14 +210,25 @@ if currentPlace == "Game" then
         end
 
         if getgenv().ReturnLobby then
-            if getgenv().UsePrivateServer and (getgenv().PrivateLink and getgenv().PrivateLink ~= "") then
+
+            if (getgenv().UsePrivateServer and (getgenv().PrivateLink and getgenv().PrivateLink ~= "")) or
+               (getgenv().UsePrivateServer and (getgenv().PrivateCode and getgenv().PrivateCode ~= ""))
+
+            then
                 game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestUpdateSetting"):FireServer("AutoSkip", false)
                 task.wait()
-                local URL = getgenv().PrivateLink
-                local PrivateCode = string.match(URL, "privateServerLinkCode=([^&]+)")
+
+                local MainPrivateCode
+                if getgenv().PrivateCode and not getgenv().PrivateLink then
+                    MainPrivateCode = getgenv().PrivateCode
+                elseif getgenv().PrivateLink and not getgenv().PrivateCode then
+                    local URL = getgenv().PrivateLink
+                    MainPrivateCode = string.match(URL, "privateServerLinkCode=([^&]+)")
+                end
+
                 local infoTable = {
                     placeId = game.PlaceId,
-                    linkCode = `"{PrivateCode}"`
+                    linkCode = `"{MainPrivateCode}"`
                 }
                 game:GetService("ExperienceService"):LaunchExperience(infoTable)
                 game:Shutdown()
@@ -237,55 +248,111 @@ if currentPlace == "Game" then
             task.spawn(sendWebhook)
         end
     end)
+
 elseif currentPlace == "Lobby" then
     repeat
         task.wait()
-    until LocalPlayer:FindFirstChild("PlayerGui") and
-          LocalPlayer.PlayerGui:FindFirstChild("GUI")
+    until LocalPlayer:FindFirstChild("PlayerGui") and LocalPlayer.PlayerGui:FindFirstChild("GUI")
     debugPrint("GUI Found")
 
-    local GUI = LocalPlayer.PlayerGui.GUI
+    local GUI
 
-    function sendWebhook()
-        function getEmbedColorAndTitle()
-            return 0xffd700, "**Stats Tracking**"
+    if getgenv().Multiplayer and getgenv().MembersTracking then
+
+        for i, MembersName in ipairs(PartyMembers) do
+            local CurrentInstance = game:GetService("Players"):FindFirstChild(MembersName)
+            if CurrentInstance then
+                GUI = CurrentInstance.PlayerGui.GUI
+
+                function trackMembersGrind()
+                    function getEmbedColorAndTitle()
+                        return 0xffd700, "**Stats Tracking**"
+                    end
+
+                    local fields = {
+                        {name = "**:trophy: Wins:**", value = CurrentInstance.leaderstats.Wins.Value, inline = true},
+                        {name = "**:chart_with_upwards_trend: Level:**", value = CurrentInstance.leaderstats.Level.Value, inline = true},
+                    }
+                    local embedColor, TitleMsg = getEmbedColorAndTitle()
+                    local embed = {
+                        author = {
+                            name = "Tower Defense X  |  Notification system",
+                            icon_url = "https://i.imgur.com/aPNN9Lp.png"
+                        },
+                        title = "**Player: ||" .. CurrentInstance.Name .. "||**  |  " .. TitleMsg,
+                        description = string.format(
+                            "**:star2: EXP Bar:** %s\n**:coin: Golds:** %s\n**:gem: Crystals:** %s",
+                            GUI:WaitForChild("XPLevel"):WaitForChild("xp").Text,
+                            GUI:WaitForChild("CurrencyDisplay"):WaitForChild("GoldDisplay"):WaitForChild("ValueText").Text,
+                            GUI:WaitForChild("CurrencyDisplay"):WaitForChild("CrystalsDisplay"):WaitForChild("ValueText").Text
+                        ),
+                        color = embedColor,
+                        fields = fields,
+                        thumbnail = {
+                            url = "https://i.imgur.com/MWxktrO.png"
+                        },
+                        footer = {
+                            text = "Modified by Gurty",
+                            icon_url = "https://i1.sndcdn.com/artworks-OYitqLrvBDkyH2Go-ywy2lg-t500x500.jpg"
+                        },
+                        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time())
+                    }
+
+                    if getgenv().MembersTracking then
+                        debugPrint("Sending Members Stats")
+                        SendMessageEMBED(getgenv().Webhook, embed)
+                    end
+                end
+
+                repeat task.wait() until game:IsLoaded()
+                task.spawn(trackMembersGrind)
+            end
         end
+    elseif (getgenv().Multiplayer and not getgenv().MembersTracking) or
+           (not getgenv().Multiplayer and not getgenv().MembersTracking) then
 
-        local fields = {
-            {name = "**:trophy: Wins:**", value = LocalPlayer.leaderstats.Wins.Value, inline = true},
-            {name = "**:chart_with_upwards_trend: Level:**", value = LocalPlayer.leaderstats.Level.Value, inline = true},
-        }
-        local embedColor, TitleMsg = getEmbedColorAndTitle()
-        local embed = {
-            author = {
-                name = "Tower Defense X  |  Notification system",
-                icon_url = "https://i.imgur.com/aPNN9Lp.png"
-            },
-            title = "**Player: ||" .. LocalPlayer.Name .. "||**  |  " .. TitleMsg,
-            description = string.format(
-                "**:star2: EXP Bar:** %s\n**:coin: Golds:** %s\n**:gem: Crystals:** %s",
-                GUI:WaitForChild("XPLevel"):WaitForChild("xp").Text,
-                GUI:WaitForChild("CurrencyDisplay"):WaitForChild("GoldDisplay"):WaitForChild("ValueText").Text,
-                GUI:WaitForChild("CurrencyDisplay"):WaitForChild("CrystalsDisplay"):WaitForChild("ValueText").Text
-            ),
-            color = embedColor,
-            fields = fields,
-            thumbnail = {
-                url = "https://i.imgur.com/MWxktrO.png"
-            },
-            footer = {
-                text = "Modified by Gurty",
-                icon_url = "https://i1.sndcdn.com/artworks-OYitqLrvBDkyH2Go-ywy2lg-t500x500.jpg"
-            },
-            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time())
-        }
+        GUI = LocalPlayer.PlayerGui.GUI
 
-        if getgenv().StatsTracking then
+        function sendWebhook()
+            function getEmbedColorAndTitle()
+                return 0xffd700, "**Stats Tracking**"
+            end
+
+            local fields = {
+                {name = "**:trophy: Wins:**", value = LocalPlayer.leaderstats.Wins.Value, inline = true},
+                {name = "**:chart_with_upwards_trend: Level:**", value = LocalPlayer.leaderstats.Level.Value, inline = true},
+            }
+            local embedColor, TitleMsg = getEmbedColorAndTitle()
+            local embed = {
+                author = {
+                    name = "Tower Defense X  |  Notification system",
+                    icon_url = "https://i.imgur.com/aPNN9Lp.png"
+                },
+                title = "**Player: ||" .. LocalPlayer.Name .. "||**  |  " .. TitleMsg,
+                description = string.format(
+                    "**:star2: EXP Bar:** %s\n**:coin: Golds:** %s\n**:gem: Crystals:** %s",
+                    GUI:WaitForChild("XPLevel"):WaitForChild("xp").Text,
+                    GUI:WaitForChild("CurrencyDisplay"):WaitForChild("GoldDisplay"):WaitForChild("ValueText").Text,
+                    GUI:WaitForChild("CurrencyDisplay"):WaitForChild("CrystalsDisplay"):WaitForChild("ValueText").Text
+                ),
+                color = embedColor,
+                fields = fields,
+                thumbnail = {
+                    url = "https://i.imgur.com/MWxktrO.png"
+                },
+                footer = {
+                    text = "Modified by Gurty",
+                    icon_url = "https://i1.sndcdn.com/artworks-OYitqLrvBDkyH2Go-ywy2lg-t500x500.jpg"
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time())
+            }
             debugPrint("Sending webhook")
             SendMessageEMBED(getgenv().Webhook, embed)
         end
-    end
 
-    repeat task.wait() until game:IsLoaded()
-    task.spawn(sendWebhook)
+        repeat task.wait() until game:IsLoaded()
+        if getgenv().StatsTracking then
+            task.spawn(sendWebhook)
+        end
+    end
 end
