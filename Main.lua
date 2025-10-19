@@ -210,8 +210,20 @@ if currentPlace == "Game" then
         end
 
         if getgenv().ReturnLobby then
-            game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestTeleportToLobby"):FireServer()
-            debugPrint("Taking you back to the lobby.")
+            if getgenv().UsePrivateServer and (getgenv().PrivateLink and getgenv().PrivateLink ~= "") then
+                local URL = getgenv().PrivateLink
+                local PrivateCode = string.match(URL, "privateServerLinkCode=([^&]+)")
+                local infoTable = {
+                    placeId = game.PlaceId,
+                    linkCode = `"{PrivateCode}"`
+                }
+                game:GetService("ExperienceService"):LaunchExperience(infoTable)
+                game:Shutdown()
+            else
+                game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestUpdateSetting"):FireServer("AutoSkip", false)
+                game.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RequestTeleportToLobby"):FireServer()
+                debugPrint("Taking you back to the lobby.")
+            end
         end
     end
 
