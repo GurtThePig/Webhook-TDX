@@ -64,6 +64,7 @@ if currentPlace == "Game" then
         ["Gas Station"] = "https://static.wikia.nocookie.net/tdx/images/b/b9/GasStation.png",
         ["GDI Port City"] = "https://static.wikia.nocookie.net/tdx/images/3/35/GDIPortCity.png",
         ["Grasslands"] = "https://static.wikia.nocookie.net/tdx/images/6/6c/Grasslands.png",
+        ["G.U.N. Facility"] = "https://static.wikia.nocookie.net/tdx/images/a/a1/G.U.N.2.png",
         ["Hakurei Shrine"] = "https://static.wikia.nocookie.net/tdx/images/b/b0/HakureiShrine.png",
         ["Hellspire"] = "https://static.wikia.nocookie.net/tdx/images/6/66/HellspireThumb.png",
         ["Highrise"] = "https://static.wikia.nocookie.net/tdx/images/8/85/HighriseIcon.png",
