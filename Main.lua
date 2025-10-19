@@ -237,7 +237,7 @@ elseif currentPlace == "Lobby" then
         end
 
         local fields = {
-            {name = "**:triumph: Wins:**", value = LocalPlayer.leaderstats.Wins.Value, inline = true},
+            {name = "**:trophy: Wins:**", value = LocalPlayer.leaderstats.Wins.Value, inline = true},
             {name = "**:chart_with_upwards_trend: Level:**", value = LocalPlayer.leaderstats.Level.Value, inline = true},
         }
         local embedColor, TitleMsg = getEmbedColorAndTitle()
