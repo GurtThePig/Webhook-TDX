@@ -228,7 +228,7 @@ if currentPlace == "Game" then
 
                 local infoTable = {
                     placeId = 9503261072,
-                    linkCode = '"' .. tostring(MainPrivateCode) .. '"'
+                    linkCode = tostring(MainPrivateCode)
                 }
                 game:GetService("ExperienceService"):LaunchExperience(infoTable)
                 game:Shutdown()
